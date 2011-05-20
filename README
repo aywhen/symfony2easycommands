@@ -1,6 +1,10 @@
+Usage:
+copy KendoctorInitBundleCommand.php into /vender/symfony/src/symfony/bundle/FrameworkBundle/Command directory
+and in console ./app/console kendoctor:init:bundle 
+
 The <info>kendoctor:init:bundle</info> command generates a new bundle with a basic skeleton.
 
-<info>./app/console init:bundle "Vendor\HelloBundle" [bundleName]</info>
+<info>./app/console kendoctor:init:bundle "Vendor\HelloBundle" [bundleName]</info>
 
 The bundle namespace must end with "Bundle" (e.g. <comment>Vendor\HelloBundle</comment>)
 and it will place into src directory (e.g. <comment>src</comment>).
