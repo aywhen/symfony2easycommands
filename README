@@ -1,4 +1,4 @@
-The <info>init:bundle</info> command generates a new bundle with a basic skeleton.
+The <info>kendoctor:init:bundle</info> command generates a new bundle with a basic skeleton.
 
 <info>./app/console init:bundle "Vendor\HelloBundle" [bundleName]</info>
 
