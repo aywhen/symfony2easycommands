@@ -139,15 +139,21 @@ EOT
                
         $this->configDefaultControllerRouterOfBundle($bundle, $path, $targetDir);
          
+        $this->createStandaloneEntityDefinitionYaml($path);
+        
         $this->giveNewbieSuggestion($output, $bundle);
          
-        if(!file_exists("/config/mapping.orm.yml"))
-        {
-            file_put_contents("c:\\mapping.orm.yml", $this->getSampleYamlEntityDefinition());
-        }
+       
         
     }
 
+    private function createStandaloneEntityDefinitionYaml($path)
+    {
+         if(!file_exists($path."/config/mapping.orm.yml"))
+        {
+            file_put_contents($path."/config/mapping.orm.yml", $this->getSampleYamlEntityDefinition());
+        }
+    }
     
     private function configDefaultControllerRouterOfBundle($bundle, $path, $targetDir)
     {
