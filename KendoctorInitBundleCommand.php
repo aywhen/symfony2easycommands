@@ -100,7 +100,7 @@ EOT
             throw new \InvalidArgumentException(implode("\n\n", $msg));
         }
 
-  
+
         //should be 'src' for a niewbie, no choice
         $dir = "src";
         $root = $this->getApplication()->getKernel()->getRootDir();
@@ -111,12 +111,12 @@ EOT
         $dir = '/' === substr($dir, -1, 1) ? $dir : $dir . '/';
 
         $targetDir = $dir . strtr($namespace, '\\', '/');
-        
-        
+
+
         if (file_exists($targetDir)) {
             throw new \RuntimeException(sprintf('Bundle "%s" already exists.', $bundle));
         }
-        
+
         $filesystem = $this->container->get('filesystem');
         $filesystem->mirror(__DIR__ . '/../Resources/skeleton/bundle/generic', $targetDir);
         //should be yaml format, no choice.
@@ -128,67 +128,62 @@ EOT
         ));
 
         rename($targetDir . '/Bundle.php', $targetDir . '/' . $bundle . '.php');
-        $filesystem->mkdir($targetDir.'/Entity');
-        
-        
-       $this->configBundleToEntityMappings($bundle, $path);
-        
+        $filesystem->mkdir($targetDir . '/Entity');
+
+
+        $this->configBundleToEntityMappings($bundle, $path);
+
         $this->registerBundle($namespace, $bundle, $path);
 
         $this->registerNamespace($namespace, $path);
-               
+
         $this->configDefaultControllerRouterOfBundle($bundle, $path, $targetDir);
-         
-        $this->createStandaloneEntityDefinitionYaml($path);
-        
+
+        $this->createStandaloneEntityDefinitionYaml($targetDir);
+
         $this->giveNewbieSuggestion($output, $bundle);
-         
-       
-        
     }
 
-    private function createStandaloneEntityDefinitionYaml($path)
-    {
-         if(!file_exists($path."/config/mapping.orm.yml"))
-        {
-            file_put_contents($path."/config/mapping.orm.yml", $this->getSampleYamlEntityDefinition());
+    private function createStandaloneEntityDefinitionYaml($targetDir) {
+        $path = $targetDir . "/Resources/config/doctrine/";
+        $this->container->get('filesystem')->mkdir($path);
+
+        if (!file_exists($path . '/mapping.orm.yml')) {
+            file_put_contents($path . '/mapping.orm.yml', $this->getSampleYamlEntityDefinition());
         }
     }
-    
-    private function configDefaultControllerRouterOfBundle($bundle, $path, $targetDir)
-    {
+
+    private function configDefaultControllerRouterOfBundle($bundle, $path, $targetDir) {
         $lowercase = strtolower($bundle);
-         $config = Yaml::load($path . '/config/routing.yml');
-         if(!is_array($config)) $config = array();
-         if(!isset($config[$lowercase]))
-         {
-             $config[$lowercase] = array(
-                 'resource' => sprintf('@%s/Resources/config/routing.yml', $bundle)
-             ) ;             
-         }         
-         $config = Yaml::dump($config, 10);
-         file_put_contents($path . '/config/routing.yml', $config);              
-         
-         $config = Yaml::load($targetDir . '/Resources/config/routing.yml');
-         if(!is_array($config)) $config = array();
-          if(!isset($config[$lowercase.'_default']))
-         {
-             $config[$lowercase.'_default'] = array(
-                 'pattern' => '/'.$lowercase,
-                 'defaults' => array(
-                     '_controller' => $bundle.':Default:index'
-                 )
-             ) ;             
-         }   
-         print_r($config);
-         $config = Yaml::dump($config, 10);
-         file_put_contents($targetDir . '/Resources/config/routing.yml', $config);        
-         
+        $config = Yaml::load($path . '/config/routing.yml');
+        if (!is_array($config))
+            $config = array();
+        if (!isset($config[$lowercase])) {
+            $config[$lowercase] = array(
+                'resource' => sprintf('@%s/Resources/config/routing.yml', $bundle)
+                    );
+        }
+        $config = Yaml::dump($config, 10);
+        file_put_contents($path . '/config/routing.yml', $config);
+
+        $config = Yaml::load($targetDir . '/Resources/config/routing.yml');
+        if (!is_array($config))
+            $config = array();
+        if (!isset($config[$lowercase . '_default'])) {
+            $config[$lowercase . '_default'] = array(
+                'pattern' => '/' . $lowercase,
+                'defaults' => array(
+                    '_controller' => $bundle . ':Default:index'
+                )
+                    );
+        }
+        print_r($config);
+        $config = Yaml::dump($config, 10);
+        file_put_contents($targetDir . '/Resources/config/routing.yml', $config);
     }
-    
-    private function giveNewbieSuggestion($output, $bundle)
-    {
-$content = <<< GUIDE
+
+    private function giveNewbieSuggestion($output, $bundle) {
+        $content = <<< GUIDE
    
 OK, the %s have been configured into orm's mappings in app/config.yml and is ready for entity generation 
 
@@ -204,16 +199,15 @@ You can type http://localhost/.../web/app_dev.php/%s to see a  WORLD.
 
 Next command will be kendoctor:generate:entities until you have finished the entity definition requiring your db connection(DBAL)  info configured properly.
 GUIDE;
-        $output->writeln(sprintf($content, $bundle, $bundle, strtolower($bundle)));        
-        
+        $output->writeln(sprintf($content, $bundle, $bundle, strtolower($bundle)));
     }
-    
+
     private function findBundleMappings(&$config, $appendBundle) {
         $mappings = array();
 
         while (list($key, $value) = each($config)) {
             if ($key === "mappings") {
-                if(is_array($value) && !array_key_exists($appendBundle, $value)) {
+                if (is_array($value) && !array_key_exists($appendBundle, $value)) {
                     $config[$key] = array_merge($value, array($appendBundle => null));
                 }
                 return true;
@@ -229,46 +223,40 @@ GUIDE;
         return false;
     }
 
-    
-    private function configBundleToEntityMappings($bundle, $path)
-    {
-       $config = Yaml::load($path . '/config/config.yml');
-        
+    private function configBundleToEntityMappings($bundle, $path) {
+        $config = Yaml::load($path . '/config/config.yml');
+
         $mappings = $this->findBundleMappings($config, $bundle);
         $config = Yaml::dump($config, 10);
 
-        file_put_contents($path . '/config/config.yml', $config);     
+        file_put_contents($path . '/config/config.yml', $config);
     }
-    
-    private function registerBundle($namespace, $bundle, $path)
-    {
+
+    private function registerBundle($namespace, $bundle, $path) {
         $insertLine = "new " . $namespace . '\\' . $bundle . "(),\r\n";
-        
+
         $this->insertLineByMark(');', $insertLine, $path . '/AppKernel.php');
-        
     }
-    
-    private function registerNamespace($namespace, $path)
-    {       
+
+    private function registerNamespace($namespace, $path) {
         //get namespace name
-        $tokens = explode("\\", $namespace);       
+        $tokens = explode("\\", $namespace);
         //format namespace => directory
         $insertLine = "    '" . $tokens[0] . "'             => __DIR__.'/../src',\r\n";
-        
+
         $this->insertLineByMark('));', $insertLine, $path . '/autoload.php');
-        
     }
-    
-    private function insertLineByMark($mark, $insertLine, $file)
-    {
+
+    private function insertLineByMark($mark, $insertLine, $file) {
         $found = false;
         $content = '';
-        
+
         $handle = @fopen($file, "r");
         if ($handle) {
             while (!feof($handle)) {
                 $line = fgets($handle);
-                if(trim($line) === trim($insertLine))  $found = true;
+                if (trim($line) === trim($insertLine))
+                    $found = true;
                 if (trim($line) === $mark && !$found) {
                     $content .= $insertLine;
                     $content .= $line;
@@ -281,12 +269,10 @@ GUIDE;
         }
         file_put_contents($file, $content);
     }
-    
-    
-    private function getSampleYamlEntityDefinition()
-    {
-return <<< YAML
-Doctrine\Tests\ORM\Mapping\User:
+
+    private function getSampleYamlEntityDefinition($bundle) {
+        return <<< YAML
+Namespace\MyBundle\Entity\User:
   type: entity
   table: cms_users
   id:
@@ -325,4 +311,5 @@ Doctrine\Tests\ORM\Mapping\User:
     postPersist: [ doStuffOnPostPersist ] 
 YAML;
     }
+
 }

@@ -1,1 +1,40 @@
-SAdfsdf
+The <info>init:bundle</info> command generates a new bundle with a basic skeleton.
+
+<info>./app/console init:bundle "Vendor\HelloBundle" [bundleName]</info>
+
+The bundle namespace must end with "Bundle" (e.g. <comment>Vendor\HelloBundle</comment>)
+and it will place into src directory (e.g. <comment>src</comment>).
+
+If you don't specify a bundle name (e.g. <comment>HelloBundle</comment>), the bundle name will
+be the concatenation of the namespace segments (e.g. <comment>VendorHelloBundle</comment>).
+
+src option is remove and always "src"
+
+Then this bundle will configured into orm's mappings and be ready for entity generation.
+
+Register the bundle in AppKernel.php and register namespace in autoload.php
+
+If src/Vendor/HelloBundle/Resources/config/doctrine/mapping.orm.yml does not exisit, it will create it for your entity definition.
+
+All these will be done, :), so, you can define all entities of yours in one yaml file in it NOW.
+
+Next command will be kendoctor:generate:entities until you have finished the entity definition requiring your db connection(DBAL)  info configured properly.
+
+
+Next to do is to implement this command:
+
+kendoctor:generate:entities
+It's preview features:
+1) load mapping metadata from one yaml, auto genearate stanlone .yml for each entity class and put into Resources/config/doctrine/metadata/orm/ directory
+2) generate all these Entities and put into /Entity directory
+3) generate all these Entities Repositoires classes
+4) generate all tehse Entities Form classes
+
+
+Next to do is to implement kendoctor:generate:restful command
+1) generate one entitiy RESTUFUL controller
+2) generate the RESTUFL controller routing config
+3) support json or html mode
+
+
+
