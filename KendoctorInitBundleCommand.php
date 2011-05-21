@@ -39,9 +39,9 @@ class KendoctorInitBundleCommand extends Command {
                     new InputArgument('bundleName', InputArgument::OPTIONAL, 'The optional bundle name'),
                 ))
                 ->setHelp(<<<EOT
-The <info>init:bundle</info> command generates a new bundle with a basic skeleton.
+The <info>kendoctor:init:bundle</info> command generates a new bundle with a basic skeleton.
 
-<info>./app/console init:bundle "Vendor\HelloBundle" [bundleName]</info>
+<info>./app/console kendoctor:init:bundle "Vendor\HelloBundle" [bundleName]</info>
 
 The bundle namespace must end with "Bundle" (e.g. <comment>Vendor\HelloBundle</comment>)
 and it will place into src directory (e.g. <comment>src</comment>).
@@ -49,15 +49,19 @@ and it will place into src directory (e.g. <comment>src</comment>).
 If you don't specify a bundle name (e.g. <comment>HelloBundle</comment>), the bundle name will
 be the concatenation of the namespace segments (e.g. <comment>VendorHelloBundle</comment>).
 
+src option is remove and always "src"
+
 Then this bundle will configured into orm's mappings and be ready for entity generation.
 
 Register the bundle in AppKernel.php and register namespace in autoload.php
 
-If app/config/mapping.orm.yml does not exisit, it will create it for your entity definition.
+If src/Vendor/HelloBundle/Resources/config/doctrine/mapping.orm.yml does not exisit, it will create it for your entity definition.
 
-All these will be done, :), so, you can define all entities of yours in one yaml file app/config/mapping.orm.yml NOW.
+All these will be done, :), so, you can define all entities of yours in one yaml file in it NOW.
 
 Next command will be kendoctor:generate:entities until you have finished the entity definition requiring your db connection(DBAL)  info configured properly.
+
+
 EOT
                 )
                 ->setName('kendoctor:init:bundle')
