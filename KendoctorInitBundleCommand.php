@@ -148,6 +148,10 @@ EOT
         $this->giveNewbieSuggestion($output, $bundle);
     }
 
+    /**
+     *
+     * @param type $targetDir 
+     */
     private function createStandaloneEntityDefinitionYaml($targetDir) {
         $path = $targetDir . "/Resources/config/doctrine/";
         $this->container->get('filesystem')->mkdir($path);
@@ -156,7 +160,13 @@ EOT
             file_put_contents($path . '/mapping.orm.yml', $this->getSampleYamlEntityDefinition());
         }
     }
-
+    
+    /**
+     *
+     * @param type $bundle
+     * @param type $path
+     * @param type $targetDir 
+     */
     private function configDefaultControllerRouterOfBundle($bundle, $path, $targetDir) {
         $lowercase = strtolower($bundle);
         $config = Yaml::load($path . '/config/routing.yml');
@@ -186,6 +196,11 @@ EOT
         file_put_contents($targetDir . '/Resources/config/routing.yml', $config);
     }
 
+    /**
+     *
+     * @param type $output
+     * @param type $bundle 
+     */
     private function giveNewbieSuggestion($output, $bundle) {
         $content = <<< GUIDE
    
@@ -227,6 +242,11 @@ GUIDE;
         return false;
     }
 
+    /**
+     *
+     * @param type $bundle
+     * @param type $path 
+     */
     private function configBundleToEntityMappings($bundle, $path) {
         $config = Yaml::load($path . '/config/config.yml');
 
@@ -236,12 +256,23 @@ GUIDE;
         file_put_contents($path . '/config/config.yml', $config);
     }
 
+    /**
+     *
+     * @param type $namespace
+     * @param type $bundle
+     * @param type $path 
+     */
     private function registerBundle($namespace, $bundle, $path) {
         $insertLine = "new " . $namespace . '\\' . $bundle . "(),\r\n";
 
         $this->insertLineByMark(');', $insertLine, $path . '/AppKernel.php');
     }
 
+    /**
+     *
+     * @param type $namespace
+     * @param type $path 
+     */
     private function registerNamespace($namespace, $path) {
         //get namespace name
         $tokens = explode("\\", $namespace);
@@ -251,6 +282,12 @@ GUIDE;
         $this->insertLineByMark('));', $insertLine, $path . '/autoload.php');
     }
 
+    /**
+     *
+     * @param type $mark
+     * @param type $insertLine
+     * @param type $file 
+     */
     private function insertLineByMark($mark, $insertLine, $file) {
         $found = false;
         $content = '';
@@ -274,6 +311,11 @@ GUIDE;
         file_put_contents($file, $content);
     }
 
+    /**
+     *
+     * @param type $bundle
+     * @return type 
+     */
     private function getSampleYamlEntityDefinition($bundle) {
         return <<< YAML
 Namespace\MyBundle\Entity\User:
